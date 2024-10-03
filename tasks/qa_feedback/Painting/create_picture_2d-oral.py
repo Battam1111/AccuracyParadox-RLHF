@@ -1,0 +1,113 @@
+import matplotlib.pyplot as plt
+import wandb
+import re
+import seaborn as sns
+from mpl_toolkits.mplot3d import Axes3D
+
+# 使用Seaborn样式
+sns.set()
+
+api = wandb.Api()
+
+project = "T5-small_RM_research_StepTest_StepOnly"
+# project = "T5-base_RM_research_StepTest_StepOnly"
+# project = "T5-large_RM_research_StepTest_StepOnly"
+entity = "battam"  # 替换为您的实体名称
+
+# 根据run编号选择的keys
+keys_prefix_mapping = {
+    "1": "eval/eval_rm/factuality_ratios",
+    "2": "eval/eval_rm/relevance_ratios",
+    "3": "eval/eval_rm/completeness_rewards"
+}
+
+# 遍历每种key，获取数据并绘制图表
+for prefix, key in keys_prefix_mapping.items():
+    runs = api.runs(f"{entity}/{project}")
+    accuracies = []
+    steps = []
+    max_values = []
+    
+    for run in runs:
+        if run.name.startswith(prefix):
+            accuracy_match = re.search(r'acc_([0-9]+\.[0-9]+)', run.name)
+            step_match = re.search(r'_step_([0-9]+)', run.name)
+            max_step_match = re.search(r'KL-([0-9]+)', run.name)
+
+            if accuracy_match and step_match:
+                accuracy = float(accuracy_match.group(1))
+                step = int(step_match.group(1))
+                history = run.history(keys=[key])
+                
+                # 如果匹配到最大步数限制
+                if max_step_match:
+                    max_step = int(max_step_match.group(1)) + 50
+                    # 过滤历史数据，只保留步数小于等于最大步数的数据
+                    history = history[history['_step'] <= max_step]
+
+                if not history.empty and key in history:
+                    max_value = history[key].max()
+                    accuracies.append(accuracy)
+                    steps.append(step)
+                    max_values.append(max_value)
+
+    # 绘制以accuracy为横轴的图
+    if accuracies and max_values:
+        # 对数据进行排序
+        sorted_acc_data = sorted(zip(accuracies, max_values), key=lambda x: x[0])
+        sorted_accuracies, sorted_max_values = zip(*sorted_acc_data)
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(sorted_accuracies, sorted_max_values, '-o', label=key.split('/')[-1])
+        plt.title(f"Max {key.split('/')[-1]} in {project} (Accuracy)")
+        plt.xlabel("Accuracy")
+        plt.ylabel(key.split('/')[-1])
+        plt.legend()
+        plt.grid(True)
+        safe_filename = key.split('/')[-1] + "_accuracy"
+        plt.savefig(f"/code/FineGrainedRLHF/Pictures/2D/Max-Points-for-{safe_filename}-in-{project}.pdf", dpi=300, bbox_inches='tight')
+        plt.show()
+
+    else:
+        print(f"No data available for key: {key}")
+        plt.close()
+
+    # 绘制以step为横轴的图
+    if steps and max_values:
+        sorted_step_data = sorted(zip(steps, max_values), key=lambda x: x[0])
+        sorted_steps, sorted_max_values = zip(*sorted_step_data)
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(sorted_steps, sorted_max_values, '-o', label=key.split('/')[-1])
+        plt.title(f"Max {key.split('/')[-1]} in {project} (Step)")
+        plt.xlabel("Step")
+        plt.ylabel(key.split('/')[-1])
+        plt.legend()
+        plt.grid(True)
+        safe_filename = key.split('/')[-1] + "_step"
+        plt.savefig(f"/code/FineGrainedRLHF/Pictures/2D/Max-Points-for-{safe_filename}-in-{project}.pdf", dpi=300, bbox_inches='tight')
+        plt.show()
+
+    else:
+        print(f"No data available for key: {key}")
+        plt.close()
+
+    # 绘制以step为横轴、accuracy（reward_model_acc）为纵轴的图
+    if steps and accuracies:
+        sorted_data = sorted(zip(steps, accuracies), key=lambda x: x[0])
+        sorted_steps, sorted_accuracies = zip(*sorted_data)
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(sorted_steps, sorted_accuracies, '-o', label='Reward Model Accuracy')
+        plt.title(f"Reward Model Accuracy over Steps in {project}")
+        plt.xlabel("Step")
+        plt.ylabel("Accuracy")
+        plt.legend()
+        plt.grid(True)
+        safe_filename = key.split('/')[-1] + "rm_acc_step"
+        plt.savefig(f"/code/FineGrainedRLHF/Pictures/2D/{safe_filename}.pdf", dpi=300, bbox_inches='tight')
+        plt.show()
+    
+    else:
+        print(f"No data available for plotting Reward Model Accuracy over Steps.")
+        plt.close()
