@@ -37,7 +37,10 @@ The **QA-FEEDBACK** dataset, derived from the **ASQA** dataset, focuses on gener
 
 ## 4. Results Across Tasks
 Our experiments reveal a **paradox**: models trained with moderately accurate reward models consistently outperformed those trained with highly accurate ones across all task types:
-<p align="center"> <img src="Pictures/NSB_image.pdf" width="60%" /> <p align="center">Performance comparison: reward model accuracy vs. LM output quality.</p> </p>
+<div align="center">
+  <img src="Pictures/NSB_image.pdf" width="60%" />
+  <p>Performance comparison: RM accuracy vs. LM output quality.</p>
+</div>
 
 ## 5. Conclusion
 This study challenges the prevailing assumption that higher reward model accuracy always leads to better language model performance in RLHF. Our findings show that **moderate accuracy in reward models** can improve task alignment and training stability, leading to better outcomes across relevance, factuality, and completeness tasks. Future research should explore how to fine-tune reward models to achieve the optimal balance between accuracy and generalization, particularly in complex NLP tasks.
