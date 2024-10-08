@@ -38,7 +38,7 @@ The **QA-FEEDBACK** dataset, derived from the **ASQA** dataset, focuses on gener
 ## 4. Results Across Tasks
 Our experiments reveal a **paradox**: models trained with moderately accurate reward models consistently outperformed those trained with highly accurate ones across all task types:
 <div align="center">
-  <img src="Pictures/NSB_image.pdf" width="60%" />
+  <img src="Pictures/NSB_image.png" width="60%" />
   <p>Performance comparison: RM accuracy vs. LM output quality.</p>
 </div>
 
