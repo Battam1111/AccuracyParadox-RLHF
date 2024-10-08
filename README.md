@@ -36,10 +36,10 @@ We conducted experiments using models from the **T5** family, including **T5-sma
 The **QA-FEEDBACK** dataset, derived from the **ASQA** dataset, focuses on generating long-form answers to ambiguous, open-domain factual questions. The dataset is divided into training, validation, and testing sets, requiring models to generate detailed responses from multiple knowledge sources.
 
 ## 4. Results Across Tasks
-Our experiments reveal a **paradox**: models trained with moderately accurate reward models consistently outperformed those trained with highly accurate ones across all task types:
+Our experiments reveal a **consistent trend**: models trained with moderately accurate reward models tend to outperform those trained with highly accurate ones across a broad range of tasks, including individual cases.
 <div align="center">
   <img src="Pictures/NSB_image.png" width="60%" />
-  <p>Performance comparison: RM accuracy vs. LM output quality.</p>
+  <p>RM accuracy vs. LM performance.</p>
 </div>
 
 ## 5. Conclusion
