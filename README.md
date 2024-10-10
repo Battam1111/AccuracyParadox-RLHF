@@ -10,7 +10,7 @@
 ![T5-base](https://img.shields.io/badge/Model-T5--base-21C2A4)
 ![T5-large](https://img.shields.io/badge/Model-T5--large-21C2A4)
 
-📰 [Paper (https://arxiv.org/abs/2410.06554)]
+📰 [Paper](https://arxiv.org/abs/2410.06554)
 
 </div>
 
